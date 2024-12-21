@@ -10,18 +10,18 @@
     <div class="card-stack">
         <!-- Card stack-->
         @for(card of [0, 1, 2, 3,]; track index; let index = $index){
-        <img [ngStyle]="{right: index * 4 + 'px'}" src="/assets/img/cards/card_cover.png" alt="">
+        <img [ngStyle]="{right: index * 4 + 'px'}" src="assets/img/cards/card_cover.png" alt="">
         }
-        <img (click)="takeCard()" class="top-card" style="right: 20px" src="/assets/img/cards/card_cover.png" alt="">
+        <img (click)="takeCard()" class="top-card" style="right: 20px" src="assets/img/cards/card_cover.png" alt="">
        
         <!-- Stack for played cards-->
         @for(card of game.playedCards; track index; let index = $index){
-            <img (click)="takeCard()" class="played-card" style="right: 20px" src="/assets/img/cards/{{card}}" alt="">
+            <img (click)="takeCard()" class="played-card" style="right: 20px" src="assets/img/cards/{{card}}" alt="">
         }
 
         <!-- Currten card (Animation)-->
         @if (pickCardAnimation) {
-            <img (click)="takeCard()" class="pick-card" style="right: 20px" src="/assets/img/cards/{{currentCard}}" alt="">
+            <img (click)="takeCard()" class="pick-card" style="right: 20px" src="assets/img/cards/{{currentCard}}" alt="">
             }
 
     </div>

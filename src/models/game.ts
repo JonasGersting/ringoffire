@@ -1,10 +1,15 @@
 export class Game {
-    public players: string[] = ['Hans', 'Jonas'];
+    public id: string = '';
+    public players: string[] = [];
     public stack: string[] = [];
     public playedCards: string[] = [];
     public currentPlayer: number = 0;
 
-    constructor(){
+    constructor(gameData?: Partial<Game>){
+        if (gameData) {
+            Object.assign(this, gameData)
+        }
+
         for (let i = 1; i < 14; i++) {
             this.stack.push(`ace_${i}.png`);
             this.stack.push(`clubs_${i}.png`);
