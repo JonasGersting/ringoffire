@@ -29,7 +29,7 @@ import { PlayerMobileComponent } from "../player-mobile/player-mobile.component"
     FormsModule,
     MatDialogModule,
     PlayerMobileComponent
-],
+  ],
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
 })
@@ -38,42 +38,31 @@ export class GameComponent {
 
   readonly name = signal('');
   readonly dialog = inject(MatDialog);
-  
+
   game: Game = new Game();
   gameId: string = '';
   firestore: Firestore = inject(Firestore);
   firestoreGame: Game = new Game();
 
-constructor (private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) { }
 
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
     this.newGame();
     this.route.params.subscribe((params) => {
       this.gameId = params['id'];
       this.getGameById(this.gameId);
-      
-    })
-    
 
+    })
+    this.openDialog();
   }
 
   getGameById(id: string): void {
-    // Referenz zum spezifischen Dokument mit der ID
     const gameDocRef = doc(this.firestore, `games/${id}`);
-    
-    // Verwende onSnapshot, um Änderungen des Spiels in Echtzeit zu abonnieren
     onSnapshot(gameDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
-        // Das Spiel-Dokument existiert, also konvertiere es in ein Game-Objekt
         this.firestoreGame = this.setGameObject(docSnapshot.data(), docSnapshot.id);
         this.game = this.firestoreGame;
-        // this.game.currentPlayer = this.firestoreGame.currentPlayer;
-        // this.game.playedCards = this.firestoreGame.playedCards;
-        // this.game.players = this.firestoreGame.players;
-        // this.game.stack = this.firestoreGame.stack;
-        // this.game.pickCardAnimation = this.firestoreGame.pickCardAnimation;
-        // this.game.currentCard = this.firestoreGame.currentCard;
       } else {
         console.log("Kein Spiel mit dieser ID gefunden.");
       }
@@ -82,15 +71,15 @@ constructor (private route: ActivatedRoute) {}
 
   setGameObject(obj: any, id: string): Game {
     return new Game({
-        id: id,
-        players: obj.players || [],
-        stack: obj.stack || [],
-        playedCards: obj.playedCards || [],
-        currentPlayer: obj.currentPlayer || 0,
-        pickCardAnimation: obj.pickCardAnimation || false,
-        currentCard: obj.currentCard || '',
+      id: id,
+      players: obj.players || [],
+      stack: obj.stack || [],
+      playedCards: obj.playedCards || [],
+      currentPlayer: obj.currentPlayer || 0,
+      pickCardAnimation: obj.pickCardAnimation || false,
+      currentCard: obj.currentCard || '',
     });
-}
+  }
 
 
 
@@ -99,16 +88,15 @@ constructor (private route: ActivatedRoute) {}
     this.game = new Game();
   }
 
- 
+
 
   takeCard(): void {
     if (!this.game.pickCardAnimation) {
       this.game.currentCard = this.game.stack.pop() || 'no_card.png';
       this.game.pickCardAnimation = true;
-      
+
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
-      // this.saveGame();
       setTimeout(() => {
         this.game.playedCards.push(this.game.currentCard);
         console.log(this.game.currentCard);
@@ -119,32 +107,29 @@ constructor (private route: ActivatedRoute) {}
   }
 
   openDialog(): void {
+    const disableClose = this.game.players.length === 0;
+  
     const dialogRef = this.dialog.open(Dialog, {
-      data: { name: this.name() },
+      data: { 
+        name: this.name(),
+        game: this.game 
+      },
+      disableClose: disableClose, 
     });
-
+  
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name !== undefined) {
         this.game.players.push(name);
         this.saveGame();
+        console.log(this.game.players);
+        
       }
     });
   }
-
+  
   async saveGame() {
     const gameData = this.game.toJson();
-    console.log('Speichere Spiel:', gameData); // Debugging
     const gameRef = doc(this.firestore, `games/${this.gameId}`);
     await updateDoc(gameRef, gameData);
-}
-
-
-
-
-
-
-
-
-
-
+  }
 }

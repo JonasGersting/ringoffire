@@ -72,6 +72,11 @@ app-game {
     position: absolute;
     right: 32px;
     bottom: 32px;
+
+    @media (max-width: 720px)
+    {
+        bottom: 136px;
+    }
 }
 
 .pin-bottom {

@@ -12,9 +12,11 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
+import { Game } from '../../models/game';
 
 export interface DialogData {
   name: string;
+  game: Game;
 }
 
 @Component({
@@ -32,14 +34,19 @@ export interface DialogData {
   standalone: true,
   templateUrl: './dialog.component.html',
 })
-
 export class Dialog {
   readonly dialogRef = inject(MatDialogRef<Dialog>);
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);
   readonly name = model(this.data.name);
-  
+
+  get playersExist(): boolean {
+    return this.data.game.players.length === 0;
+  }
 
   onNoClick(): void {
+    if (this.data.game.players.length === 0) {
+      return; 
+    }
     this.dialogRef.close();
   }
 }
