@@ -99,7 +99,6 @@ export class GameComponent {
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
       setTimeout(() => {
         this.game.playedCards.push(this.game.currentCard);
-        console.log(this.game.currentCard);
         this.game.pickCardAnimation = false;
         this.saveGame();
       }, 1000);
@@ -120,9 +119,7 @@ export class GameComponent {
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name !== undefined) {
         this.game.players.push(name);
-        this.saveGame();
-        console.log(this.game.players);
-        
+        this.saveGame();        
       }
     });
   }

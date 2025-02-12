@@ -16,18 +16,10 @@ export class StartScreenComponent {
 
   }
 
-
   newGame(){
     let game = new Game;
-    console.log(game);
-    
     this.addGame(game.toJson(), 'games');
-      
-     
-    
   }
-
-
 
   async addGame(item: object, colId: 'games') {
     await addDoc(this.getGamesRef(colId), item).catch(
@@ -37,7 +29,6 @@ export class StartScreenComponent {
     });
   }
 
-  
   getGamesRef(colId: string) {
     return collection(this.firestore, colId);
   }
